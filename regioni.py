@@ -125,6 +125,7 @@ def regioni() -> None:
     min_ocenter = min(ocenters)
     max_ocenter = max(ocenters)
     for map in subs:
+        print(f"{map.name};{map.ocenter:.2f}")
         color = color_gradient(min_ocenter, max_ocenter, map.ocenter)
         for points in map.coordinates:
             x, y = zip(*points)

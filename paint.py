@@ -5,7 +5,8 @@ from typing import Optional
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.offsetbox import AnchoredText
-from shapely.geometry import Point, shape as makeShape
+from shapely.geometry import Point
+from shapely.geometry import shape as makeShape
 
 matplotlib.style.use("fivethirtyeight")
 plt.rcParams["figure.constrained_layout.use"] = True
@@ -22,6 +23,7 @@ class Map:
         self.name = name
         with open(f"{name}.geojson", "r") as fo:
             geojson = json.load(fo)
+        self.geojson = geojson
         self.coordinates: list[list[list[float]]] = []
         self.holes: list[list[list[float]]] = []
         if geojson["features"][0]["geometry"]["type"] == "Polygon":
@@ -97,7 +99,6 @@ class Map:
 
     def anchor(self, loc="lower right") -> Optional[AnchoredText]:
         ocenter = sum(self.ocenters) / len(self.ocenters)
-        print(f"{self.name};{ocenter:.2f}")
         at = None
         if self.ax:
             at = AnchoredText(
@@ -111,3 +112,6 @@ class Map:
     def save(self) -> None:
         if self.fig:
             self.fig.savefig(f"{self.name}.png", bbox_inches="tight")
+            plt.close(self.fig)
+            self.fig = None
+            self.ax = None
